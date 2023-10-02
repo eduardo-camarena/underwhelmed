@@ -11,10 +11,27 @@ pub struct UnderwhelmingArgs {
     #[arg(short, long)]
     pub dest: String,
 
-    /// amount of pages you want to download
+    /// first image to download
     #[arg(short, long, default_value_t = 1)]
-    pub pages: u32,
+    pub first: u32,
 
-    #[arg(short, long, default_value_t = String::from("jpg"))]
-    pub extension: String,
+    /// amount of images you want to download
+    #[arg(short, long, default_value_t = 1)]
+    pub last: u32,
+
+    /// file extension
+    #[arg(long, default_value_t = String::from("jpg"))]
+    pub ext: String,
+
+    /// add extension to url you're downloading from
+    #[arg(long, default_value_t = false)]
+    pub add_extenstion: bool,
+
+    /// query params to add to the url
+    #[arg(long)]
+    pub query: Option<String>,
+
+    /// name to saved files
+    #[arg(long)]
+    pub name: Option<String>,
 }
