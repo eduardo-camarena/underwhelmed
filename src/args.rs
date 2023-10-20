@@ -7,9 +7,9 @@ pub struct UnderwhelmingArgs {
     #[arg(short, long)]
     pub base_url: String,
 
-    /// path to folder you want to save files to
+    /// folder you want to save files to
     #[arg(short, long)]
-    pub dest: String,
+    pub destination: String,
 
     /// first image to download
     #[arg(short, long, default_value_t = 1)]
@@ -24,14 +24,14 @@ pub struct UnderwhelmingArgs {
     pub ext: String,
 
     /// add extension to url you're downloading from
-    #[arg(long, default_value_t = false)]
-    pub add_extenstion: bool,
+    #[arg(long, default_value_t = true)]
+    pub add_extention: bool,
 
     /// query params to add to the url
     #[arg(long)]
     pub query: Option<String>,
 
-    /// name to saved files
+    /// name for saved files
     #[arg(long)]
     pub name: Option<String>,
 }

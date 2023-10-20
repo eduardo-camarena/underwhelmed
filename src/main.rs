@@ -2,7 +2,7 @@ mod args;
 
 use clap::Parser;
 use indicatif::{ProgressIterator, ProgressStyle};
-use std::fs;
+use std::{fs, io};
 
 use args::UnderwhelmingArgs;
 
@@ -20,8 +20,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let response = reqwest::get(url).await;
         if response.is_ok() {
             let file = response.unwrap().bytes().await;
-            if file.is_ok() {
-                fs::write(get_file_name(i, &args), file.unwrap())
+            let file_name = get_file_name(i + 1, &args);
+            if file.is_ok() && file_name.is_ok() {
+                fs::write(file_name.unwrap(), file.unwrap())
                     .expect("there was an error while saving the file");
             }
         }
@@ -31,7 +32,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn add_extra_url_options(url: &mut String, args: &UnderwhelmingArgs) {
-    if args.add_extenstion {
+    if args.add_extention {
         url.push_str(format!(".{}", args.ext).as_str());
     }
     if args.query.is_some() {
@@ -39,9 +40,16 @@ fn add_extra_url_options(url: &mut String, args: &UnderwhelmingArgs) {
     }
 }
 
-fn get_file_name(image_number: u32, args: &UnderwhelmingArgs) -> String {
-    match args.name.as_ref() {
-        Some(name) => format!("{}/{} ({}).{}", args.dest, image_number, name, args.ext),
-        None => format!("{}/{}.{}", args.dest, image_number, args.ext),
-    }
+fn get_file_name(image_number: u32, args: &UnderwhelmingArgs) -> io::Result<String> {
+    let mut file_name = format!("{}/{}", env!("UNDERWHELMED_BASE_PATH"), args.destionation);
+
+    file_name.push_str(
+        match args.name.as_ref() {
+            Some(name) => format!("{} ({}).{}", image_number, name, args.ext),
+            None => format!("{}.{}", image_number, args.ext),
+        }
+        .as_str(),
+    );
+
+    Ok(file_name)
 }
